@@ -25,6 +25,81 @@ max1 = ''
 #A character that appears second most
 max2 = ''
 
+#Calculate the number each substring appears in the text
+def calculate_use_number(file_text, chars_number):
+    #A dictionary containing numbers of appearance of character sequences
+    usage = {}
+
+    for i in range(len(file_text)):
+        chars = file_text[i]
+
+        #Construct a string containing chars_number consecutive characters
+        for j in range(chars_number):
+            if len(file_text) > i + j + 1:
+                chars += file_text[i + j + 1]
+
+        #If there are chars_number of characters in the string increase the counter for this string
+        if len(chars) == chars_number + 1:
+            if chars in usage:
+                usage[chars] += 1
+            else:
+                usage[chars] = 1
+
+    return usage
+
+#Calculates conditional probabilities of all substrings
+def calculate_conditional_probabilities(usage_dict, char_dict):
+    #List of conditional probabilities
+    cond_prob = []
+
+    #List of all substrings
+    multiple_char_list = []
+
+    #Calculate the conditional probability and add to list
+    for chars in usage_dict:
+        usage_dict[chars] /= len(file_string)
+        #print(usage_dict[chars],chars[len(chars) - 1])
+        usage_dict[chars] /= char_dict[chars[len(chars) - 1]]
+
+    return usage_dict
+
+def generate_text(level, file_string, char_dict, text_length, char_list, prob_list):
+    #Generated text
+    text = ""
+
+    char_use = calculate_use_number(file_string, level)
+
+    char_cond_prob = calculate_conditional_probabilities(char_use, char_dict)
+
+    #Generate text
+    for i in range(text_length):
+        #If there aren't enough letters base on single character probabilities
+        if i < level:
+            index = np.random.choice(np.arange(0, len(char_list)), 1, prob_list)
+            text += char_list[index[0]]
+        else:
+            last_chars = text[-level:]
+
+            new_char_list = []
+            new_char_prob = []
+
+            #Build list of probabilities f each letter based on level previous letters
+            for chars in char_cond_prob:
+                if chars[:-1] == last_chars:
+                    new_char_list.append(chars[-1])
+                    new_char_prob.append(char_cond_prob[chars])
+
+            #If there were no conditional probabilities found base on single character probabilities
+            if len(new_char_list) == 0:
+                index = np.random.choice(np.arange(0, len(char_list)), 1, prob_list)
+                text += char_list[index[0]]
+            #Else base on lists built in previous for loop
+            else:
+                index = np.random.choice(np.arange(0, len(new_char_list)), 1, new_char_prob)
+                text += new_char_list[index[0]]
+
+    return text
+
 #Open file
 file = open("norm_hamlet.txt", "r")
 
@@ -60,12 +135,11 @@ for i in range(len(file_string)):
                 double_char_dict[chars] += 1
             else:
                 double_char_dict[chars] = 1
-                #char_list.append(line[i])
 
+#Calculate the conditional probability of characters appearing
 for chars in double_char_dict:
-    #Calculate the conditional probability of characters appearing
     double_char_dict[chars] /= len(file_string)
-    double_char_dict[chars] /= char_dict[chars[0]]
+    double_char_dict[chars] /= char_dict[chars[1]]
 print(double_char_dict)
 
 from random import randint
@@ -88,3 +162,8 @@ for i in range(char_number):
 
 print(text)
 
+print(generate_text(1, file_string, char_dict, char_number, char_list, prob_list))
+
+print(generate_text(3, file_string, char_dict, char_number, char_list, prob_list))
+
+print(generate_text(5, file_string, char_dict, char_number, char_list, prob_list))

@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3b202b90-eed3-42e3-aeed-e1d3ef11d439" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/word_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/word_generator.py" afterDir="false" />
     </list>
     <ignored path="132220.iws" />
@@ -37,12 +35,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1286" />
+          <entry key="py" value="3206" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1286" />
+          <entry key="Python" value="3206" />
         </counts>
       </usages-collector>
     </session>
@@ -55,8 +53,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/word_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="67" column="50" lean-forward="true" selection-start-line="67" selection-start-column="50" selection-end-line="67" selection-end-column="50" />
+            <state relative-caret-position="277">
+              <caret line="168" column="21" selection-start-line="168" selection-start-column="21" selection-end-line="168" selection-end-column="21" />
+              <folding>
+                <marker date="1556555924793" expanded="true" signature="3209:3227" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -214,8 +215,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/word_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="67" column="50" lean-forward="true" selection-start-line="67" selection-start-column="50" selection-end-line="67" selection-end-column="50" />
+        <state relative-caret-position="277">
+          <caret line="168" column="21" selection-start-line="168" selection-start-column="21" selection-end-line="168" selection-end-column="21" />
+          <folding>
+            <marker date="1556555924793" expanded="true" signature="3209:3227" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
