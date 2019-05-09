@@ -48,7 +48,7 @@ def calculate_use_number(file_text, chars_number):
     return usage
 
 #Calculates conditional probabilities of all substrings
-def calculate_conditional_probabilities(usage_dict, char_dict):
+def calculate_conditional_probabilities(usage_dict, char_dict, file_len):
     #List of conditional probabilities
     cond_prob = []
 
@@ -57,51 +57,53 @@ def calculate_conditional_probabilities(usage_dict, char_dict):
 
     #Calculate the conditional probability and add to list
     for chars in usage_dict:
-        usage_dict[chars] /= len(file_string)
+        usage_dict[chars] /= file_len
         #print(usage_dict[chars],chars[len(chars) - 1])
         usage_dict[chars] /= char_dict[chars[len(chars) - 1]]
 
     return usage_dict
 
 def generate_text(level, file_string, char_dict, text_length, char_list, prob_list):
-    #Generated text
-    text = ""
-
     char_use = calculate_use_number(file_string, level)
 
-    char_cond_prob = calculate_conditional_probabilities(char_use, char_dict)
+    char_cond_prob = calculate_conditional_probabilities(char_use, char_dict, len(file_string))
+
+    if (level == 5):
+        #Generated text starting with probability for level 5
+        text = "probability "
+    else:
+        #Get random value from dictionary of multiple characters and start the text with it
+        rand_chars = np.random.choice(list(char_use))
+        text = rand_chars[:level]
 
     #Generate text
-    for i in range(text_length):
-        #If there aren't enough letters base on single character probabilities
-        if i < level:
-            index = np.random.choice(np.arange(0, len(char_list)), 1, prob_list)
-            text += char_list[index[0]]
+    for i in range(len(text), text_length):
+        last_chars = text[-level:]
+
+        new_char_list = []
+        new_char_prob = []
+
+        #Build list of probabilities f each letter based on level previous letters
+        for chars in char_cond_prob:
+            if chars[:level] == last_chars:
+                new_char_list.append(chars[-1])
+                new_char_prob.append(char_cond_prob[chars])
+
+        #If there were no conditional probabilities found add random element in dictionary to text
+        if len(new_char_list) == 0:
+            rand_chars = np.random.choice(list(char_use))
+            text += rand_chars[:level]
+
+            i = i + level - 1
+        #Else base on lists built in previous for loop
         else:
-            last_chars = text[-level:]
-
-            new_char_list = []
-            new_char_prob = []
-
-            #Build list of probabilities f each letter based on level previous letters
-            for chars in char_cond_prob:
-                if chars[:-1] == last_chars:
-                    new_char_list.append(chars[-1])
-                    new_char_prob.append(char_cond_prob[chars])
-
-            #If there were no conditional probabilities found base on single character probabilities
-            if len(new_char_list) == 0:
-                index = np.random.choice(np.arange(0, len(char_list)), 1, prob_list)
-                text += char_list[index[0]]
-            #Else base on lists built in previous for loop
-            else:
-                index = np.random.choice(np.arange(0, len(new_char_list)), 1, new_char_prob)
-                text += new_char_list[index[0]]
+            index = np.random.choice(np.arange(0, len(new_char_list)), 1, new_char_prob)
+            text += new_char_list[index[0]]
 
     return text
 
 #Open file
-file = open("norm_hamlet.txt", "r")
+file = open("norm_romeo_and_juliet.txt", "r")
 
 #Convert the file to string
 file_string = file.read()
@@ -140,6 +142,8 @@ for i in range(len(file_string)):
 for chars in double_char_dict:
     double_char_dict[chars] /= len(file_string)
     double_char_dict[chars] /= char_dict[chars[1]]
+
+print("Conditional probabilities of two most common letters:")
 print(double_char_dict)
 
 from random import randint
@@ -149,7 +153,7 @@ for i in range(char_number):
     index = randint(0, len(char_list) - 1)
     text += char_list[index]
 
-print(text)
+print("Text generated randomly with equal probabilities:\n" + text + "\n")
 
 text = ""
 
@@ -160,10 +164,10 @@ for i in range(char_number):
     index = np.random.choice(np.arange(0, len(char_list)), 1, prob_list)
     text += char_list[index[0]]
 
-print(text)
+print("Text generated randomly based on probability of every single letter:\n" + text + "\n")
 
-print(generate_text(1, file_string, char_dict, char_number, char_list, prob_list))
+print("Text generated randomly based on Markov's source of first order:\n" + generate_text(1, file_string, char_dict, char_number, char_list, prob_list) + "\n")
 
-print(generate_text(3, file_string, char_dict, char_number, char_list, prob_list))
+print("Text generated randomly based on Markov's source of third order:\n" + generate_text(3, file_string, char_dict, char_number, char_list, prob_list) + "\n")
 
-print(generate_text(5, file_string, char_dict, char_number, char_list, prob_list))
+print("Text generated randomly based on Markov's source of fifth order:\n" + generate_text(5, file_string, char_dict, char_number, char_list, prob_list) + "\n")
