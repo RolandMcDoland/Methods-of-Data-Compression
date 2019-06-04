@@ -39,14 +39,9 @@ def decode(bitarray, code):
 
     # For every 6 bits in text
     for i in range(0, len(compressed_text), 6):
-        char_representation = ""
-
-        # Get all 6 bits in one string
-        for j in range(6):
-            char_representation += compressed_text[i + j]
-
-        # Convert it to integer
-        coded_ascii = int(char_representation, 2)
+        ''' Get 6 bits representing a single character 
+        and Convert it to integer'''
+        coded_ascii = int(compressed_text[i:i+6], 2)
 
         # Find it in code dictionary by value and add to text
         for ascii, ascii_code in code.items(): 
