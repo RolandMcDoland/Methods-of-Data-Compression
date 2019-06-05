@@ -51,6 +51,23 @@ def decode(bitarray, code):
     return text
 
 
+# A function for saving a bitarray to file
+def save(encoded):
+    compressed_file = open("encoded", 'wb')
+
+    encoded.tofile(compressed_file)
+
+
+# A function for loading a bitarray from file
+def load():
+    compressed_file = open("encoded", 'rb')
+
+    encoded = bitarray.bitarray()
+    encoded.fromfile(compressed_file)
+
+    return encoded
+
+
 # Create a dictionary containing code
 code = create()
 
@@ -60,5 +77,7 @@ file = open("norm_wiki_sample.txt", "r")
 # Convert the file to string
 file_string = file.read()
 
-print(encode('12',code))   
-print(decode(encode('12', code),code))
+if(file_string == decode(encode(file_string, code),code)):
+    print("Great! The strings match")
+else:
+    print("Failure!")
