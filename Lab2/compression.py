@@ -76,17 +76,10 @@ def load():
     # Initialise a bitarray than read it from file
     encoded_temp = bitarray.bitarray()
     encoded_temp.fromfile(compressed_file)
-
-    # Read how many redundant bits have been added
-    number_to_trim = int(trim_file.read())
-
+    
     # Trim the redundant bits
     encoded_temp_01 = encoded_temp.to01()
-    encoded_01 = encoded_temp[:-number_to_trim]
-
-    # Convert back to bitarray
-    encoded = bitarray.bitarray(encoded_01)
-
+    encoded = bitarray.bitarray(encoded_temp_01[:-int(trim_file.read())])
 
     # Read code from file than slit it into entries
     code_string = code_file.read()
