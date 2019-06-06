@@ -52,20 +52,41 @@ def decode(bitarray, code):
 
 
 # A function for saving a bitarray to file
-def save(encoded):
+def save(encoded, code):
     compressed_file = open("encoded", 'wb')
+    code_file = open("code.txt", 'w')
 
+    print(encoded)
     encoded.tofile(compressed_file)
+
+    # Iterate over code dictionary and save it to a .txt file
+    for ascii, ascii_code in code.items():
+        code_file.write(str(ascii) + ':' + str(ascii_code) + ';')
 
 
 # A function for loading a bitarray from file
 def load():
     compressed_file = open("encoded", 'rb')
+    code_file = open("code.txt", 'r')
 
+    # Initialise a bitarray than read it from file
     encoded = bitarray.bitarray()
     encoded.fromfile(compressed_file)
 
-    return encoded
+    # Read code from file than slit it into entries
+    code_string = code_file.read()
+    split_code = code_string.split(';')
+
+    code_dict = {}
+
+    # Iterate over entries split them into key and entry than fill the dictionary
+    for entry in split_code:
+        if entry != '':
+            asciis = entry.split(':')
+
+            code_dict[int(asciis[0])] = int(asciis[1])
+
+    return encoded, code
 
 
 # Create a dictionary containing code
@@ -77,7 +98,12 @@ file = open("norm_wiki_sample.txt", "r")
 # Convert the file to string
 file_string = file.read()
 
-if(file_string == decode(encode(file_string, code),code)):
+encoded = encode('12', code)
+save(encoded, code)
+encoded, code = load()
+print(encoded)
+
+'''if(file_string == decode(encode(file_string, code),code)):
     print("Great! The strings match")
 else:
-    print("Failure!")
+    print("Failure!")'''
