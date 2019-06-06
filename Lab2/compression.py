@@ -55,23 +55,38 @@ def decode(bitarray, code):
 def save(encoded, code):
     compressed_file = open("encoded", 'wb')
     code_file = open("code.txt", 'w')
+    trim_file = open("trim.txt", 'w')
 
-    print(encoded)
     encoded.tofile(compressed_file)
 
     # Iterate over code dictionary and save it to a .txt file
     for ascii, ascii_code in code.items():
         code_file.write(str(ascii) + ':' + str(ascii_code) + ';')
 
+    # Save to file how many bits will be added
+    trim_file.write(str(encoded.length() % 8))
+
 
 # A function for loading a bitarray from file
 def load():
     compressed_file = open("encoded", 'rb')
     code_file = open("code.txt", 'r')
+    trim_file = open("trim.txt", 'r')
 
     # Initialise a bitarray than read it from file
-    encoded = bitarray.bitarray()
-    encoded.fromfile(compressed_file)
+    encoded_temp = bitarray.bitarray()
+    encoded_temp.fromfile(compressed_file)
+
+    # Read how many redundant bits have been added
+    number_to_trim = int(trim_file.read())
+
+    # Trim the redundant bits
+    encoded_temp_01 = encoded_temp.to01()
+    encoded_01 = encoded_temp[:-number_to_trim]
+
+    # Convert back to bitarray
+    encoded = bitarray.bitarray(encoded_01)
+
 
     # Read code from file than slit it into entries
     code_string = code_file.read()
@@ -98,12 +113,7 @@ file = open("norm_wiki_sample.txt", "r")
 # Convert the file to string
 file_string = file.read()
 
-encoded = encode('12', code)
-save(encoded, code)
-encoded, code = load()
-print(encoded)
-
-'''if(file_string == decode(encode(file_string, code),code)):
+if(file_string == decode(encode(file_string, code),code)):
     print("Great! The strings match")
 else:
-    print("Failure!")'''
+    print("Failure!")
